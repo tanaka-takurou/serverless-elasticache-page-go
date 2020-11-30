@@ -9,6 +9,9 @@ Parameters:
   FrontPageApiStageName:
     Type: String
     Default: 'ProdStage'
+  MainFunctionSubnetId:
+    Type: String
+    Default: 'subnet-0'
 
 Resources:
   FrontPageApi:
@@ -48,13 +51,7 @@ Resources:
       Runtime: go1.x
       Description: 'ElastiCache API Function'
       Policies:
-      - Statement:
-        - Effect: 'Allow'
-          Action:
-            - 'logs:CreateLogGroup'
-            - 'logs:CreateLogStream'
-            - 'logs:PutLogEvents'
-          Resource: '*'
+        - VPCAccessPolicy: {}
       Environment:
         Variables:
           REGION: !Ref 'AWS::Region'
@@ -67,10 +64,30 @@ Resources:
             Path: '/api'
             Method: post
             RestApiId: !Ref FrontPageApi
+      VpcConfig:
+        SecurityGroupIds:
+          - !GetAtt MainFunctionSecurityGroup.GroupId
+        SubnetIds:
+          -  !Ref MainFunctionSubnetId
+  MainFunctionSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: 'MainFunction Security Group'
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: '11211'
+          ToPort: '11211'
+          CidrIp: '0.0.0.0/0'
+      VpcId: !GetAtt ElastiCacheSecurityGroup.VpcId
   ElastiCacheSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
-      GroupDescription: Elasticache Security Group
+      GroupDescription: 'Elasticache Security Group'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '11211'
+          ToPort: '11211'
+          CidrIp: '0.0.0.0/0'
   ElastiCacheCacheCluster:
     Type: AWS::ElastiCache::CacheCluster
     Properties:
