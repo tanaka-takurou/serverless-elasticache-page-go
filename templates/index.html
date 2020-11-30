@@ -1,0 +1,34 @@
+{{define "base"}}
+<!doctype html>
+<html>
+  <head>
+{{template "headtag" .}}
+  </head>
+  <body>
+    <h1 class="ui center aligned header">ElastiCache</h1>
+    <div class="main ui container">
+      <div class="ui segment">
+        <div class="content">
+          <div class="ui form">
+            <div class="field">
+              <label>Last Update: <span id="result"></span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main ui container">
+      <form class="ui segment" method="POST">
+        <div class="content">
+          <div class="ui form">
+            <div class="field">
+              <div id="submit" class="ui green button" onclick="Update();">Update</div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div id="warning" class="ui hidden warning message"></div>
+  </body>
+</html>
+{{end}}
