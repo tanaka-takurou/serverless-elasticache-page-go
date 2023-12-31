@@ -23,11 +23,13 @@ Resources:
   FrontPageFunction:
     Type: AWS::Serverless::Function
     Properties:
+      Architectures:
+      - arm64
       FunctionName: ServerlessElastiCachePageFrontFunction
       CodeUri: bin/
-      Handler: main
+      Handler: bootstrap
       MemorySize: 256
-      Runtime: go1.x
+      Runtime: provided.al2
       Description: 'ElastiCache Front Function'
       Policies:
       Environment:
@@ -44,11 +46,13 @@ Resources:
   MainFunction:
     Type: AWS::Serverless::Function
     Properties:
+      Architectures:
+      - arm64
       FunctionName: ServerlessElastiCachePageMainFunction
       CodeUri: api/bin/
-      Handler: main
+      Handler: bootstrap
       MemorySize: 256
-      Runtime: go1.x
+      Runtime: provided.al2
       Description: 'ElastiCache API Function'
       Policies:
         - VPCAccessPolicy: {}
